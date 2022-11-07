@@ -7,7 +7,7 @@ const Book = require('../models/').Book;
   return async (req, res, next) => {
     try {
       await cb(req, res, next);
-    } catch {
+    } catch(error) {
       res.render('error', {error:err});
     }
   }
@@ -15,7 +15,7 @@ const Book = require('../models/').Book;
 
 /* GET home page. */
 router.get('/', async(req, res, next) => {
-  const books = await Book.findAll().then(book => res.json(book)); // returns a collection of articles
+  const books = await Book.findAll().then(book => res.json(book)); // returns a collection of books
   console.log(books);
   res.render('index', { title: 'Library Books' });
 });
