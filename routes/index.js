@@ -1,9 +1,23 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const app = require('../app');
+const router = express.Router();
+const Book = require('../models/').Book;
+
+/* function asyncHandler(cb) {
+  return async (req, res, next) => {
+    try {
+      await cb(req, res, next);
+    } catch {
+      res.render('error', {error:err});
+    }
+  }
+} */
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', async(req, res, next) => {
+  const books = await Book.findAll().then(book => res.json(book)); // returns a collection of articles
+  console.log(books);
+  res.render('index', { title: 'Library Books' });
 });
 
 module.exports = router;
