@@ -1,3 +1,4 @@
+var sequelize = require('./models/index.js').sequelize;
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -8,6 +9,19 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+// test connection to database and sync model
+(async () => {
+  await sequelize.sync();
+  try {
+      await sequelize.authenticate(); //returns a promise that resolves to a successful, authenticated connection to the database.
+      console.log('Connection to the database successful!'); //tests the connection to the database!!
+
+    } catch (error) {
+      console.error('Error connecting to the database: ', error);
+
+    }
+})();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
