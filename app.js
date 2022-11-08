@@ -12,14 +12,12 @@ var app = express();
 
 // test connection to database and sync model
 (async () => {
-  await sequelize.sync();
-  try {
-      await sequelize.authenticate(); //returns a promise that resolves to a successful, authenticated connection to the database.
-      console.log('Connection to the database successful!'); //tests the connection to the database!!
-
+    await sequelize.sync();
+    try {
+        await sequelize.authenticate(); //returns a promise that resolves to a successful, authenticated connection to the database.
+        console.log('Connection to the database successful!'); //tests the connection to the database!!
     } catch (error) {
-      console.error('Error connecting to the database: ', error);
-
+        console.error('Error connecting to the database: ', error);
     }
 })();
 
@@ -37,33 +35,34 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
   const err = new Error(); // custom error object
   err.status = 404;
   err.message = 'Sorry, this page is not found :(';
   next(err);
-});
+}); */
 
 // global error handler for server errors
 app.use((err, req, res, next) => {
-  if (err.status === 404) {
-      res.status(err.status);
-      res.render(
-          'page-not-found',
-          { err },
-          console.log(`Error Status: ${err.status}. ${err.message}`)
-      );
-  } else {
-      err.message =
-          err.message || `Sorry! There was an unexpected error on the server.`;
-      res.status(err.status || 500);
-      console.log(err);
-      res.render(
-          'error',
-          { err },
-          console.log(`Error Status: ${err.status}. ${err.message}`)
-      );
-  }
+    if (err.status === 404) {
+        res.status(err.status);
+        res.render(
+            'page-not-found',
+            { err },
+            console.log(`Error Status: ${err.status}. ${err.message}`)
+        );
+    } else {
+        err.message =
+            err.message ||
+            `Sorry! There was an unexpected error on the server.`;
+        res.status(err.status || 500);
+        console.log(err);
+        res.render(
+            'error',
+            { err },
+            console.log(`Error Status: ${err.status}. ${err.message}`)
+        );
+    }
 });
 
 module.exports = app;

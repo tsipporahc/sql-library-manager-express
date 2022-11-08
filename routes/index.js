@@ -10,6 +10,7 @@ function asyncHandler(cb) {
         } catch (err) {
             err.status = 404;
             err.message = 'Sorry, this page is not found :(';
+            console.log(err);
             res.render('error', { err });
         }
     };
@@ -27,7 +28,7 @@ router.get(
     asyncHandler(async (req, res, next) => {
         const books = await Book.findAll();
         //const books = await Book.findAll().then((book) => res.json(book)); // returns a collection of books
-        console.log(books);
+        //console.log(books);
         res.render('index', { books, title: 'Library Books' });
     })
 );
@@ -36,7 +37,7 @@ router.get(
 router.get(
     '/books/new',
     asyncHandler(async (req, res, next) => {
-        res.render('new-book', { title: 'Library Books' });
+        res.render('new-book', { article: {}, title: 'New Book' });
     })
 );
 
@@ -49,9 +50,37 @@ router.get(
         if (id <= books.length) {
             res.render('update-book', {
                 books: books[id],
-                title: 'Library Books',
             });
         }
+    })
+);
+
+/* POST New Book -  Posts a new book to the database */
+router.post(
+    '/',
+    asyncHandler(async (req, res) => {
+        const books = await Book.create(req.body);
+        console.log(req.body);
+        res.redirect('/books/' + books.id);
+    })
+);
+
+/* Update a book. */
+router.post(
+    '/books/:id',
+    asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const books = await Book.findAll();
+        await books.update(req.body);
+        res.redirect('/books/' + books.id);
+    })
+);
+
+/* Delete a book. */
+router.post(
+    '/:id/delete',
+    asyncHandler(async (req, res) => {
+        res.redirect('/books');
     })
 );
 
