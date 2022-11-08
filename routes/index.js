@@ -40,4 +40,19 @@ router.get(
     })
 );
 
+/* GET Book Details -  Shows book detail form */
+router.get(
+    '/books/:id',
+    asyncHandler(async (req, res, next) => {
+        const { id } = req.params;
+        const books = await Book.findAll();
+        if (id <= books.length) {
+            res.render('update-book', {
+                books: books[id],
+                title: 'Library Books',
+            });
+        }
+    })
+);
+
 module.exports = router;
