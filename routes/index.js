@@ -38,7 +38,7 @@ router.get(
 router.get(
     '/books/new',
     asyncHandler(async (req, res, next) => {
-        res.render('new-book', { books: {}, title: 'New Book' });
+        res.render('new-book', { title: 'New Book' });
     })
 );
 
@@ -46,14 +46,13 @@ router.get(
 router.post(
     '/books/new',
     asyncHandler(async (req, res) => {
-        const books = await Book.create({
-            title: req.body.title,
-            author: req.body.author,
-            genre: req.body.genre,
-            year: req.body.year,
-        });
-        console.log(books);
-        res.redirect('/books/');
+        try {
+            console.log(req.body);
+            const book = await Book.create(req.body);
+            res.redirect('/books/');
+        } catch (err) {
+            console.log(err);
+        }
     })
 );
 
@@ -61,13 +60,8 @@ router.post(
 router.get(
     '/books/:id',
     asyncHandler(async (req, res, next) => {
-        const { id } = req.params;
-        const books = await Book.findAll();
-        if (id <= books.length) {
-            res.render('update-book', {
-                books: books[id],
-            });
-        }
+        const book = await Book.findByPk(req.params.id);
+        res.render('update-book', { book });
     })
 );
 
@@ -75,20 +69,18 @@ router.get(
 router.post(
     '/books/:id',
     asyncHandler(async (req, res) => {
-        //const { id } = req.params;
-        const books = await Book.findByPk(req.params.id);
-        console.log(books);
-        await Book.update({ where: { title: req.body.title } });
+        console.log(req.body);
+        const book = await Book.update(req.body);
         res.redirect('/books/');
     })
 );
 
 /* Delete a book. */
-router.post(
+/* router.post(
     '/:id/delete',
     asyncHandler(async (req, res) => {
         res.redirect('/books');
     })
-);
+); */
 
 module.exports = router;

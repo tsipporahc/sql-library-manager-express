@@ -10,6 +10,9 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+
 // test connection to database and sync model
 (async () => {
     await sequelize.sync();
