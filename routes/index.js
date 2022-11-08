@@ -1,5 +1,6 @@
 const express = require('express');
 const app = require('../app');
+const book = require('../models/book');
 const router = express.Router();
 var Book = require('../models').Book;
 
@@ -22,7 +23,7 @@ router.get('/', (req, res, next) => {
     next();
 });
 
-/* GET Books - Shows the full list of books */
+/* GET Books Listing - Shows the full list of books */
 router.get(
     '/books',
     asyncHandler(async (req, res, next) => {
@@ -33,11 +34,26 @@ router.get(
     })
 );
 
-/* GET New Books -  Shows the create new book form */
+/* Create a new book form */
 router.get(
     '/books/new',
     asyncHandler(async (req, res, next) => {
-        res.render('new-book', { article: {}, title: 'New Book' });
+        res.render('new-book', { books: {}, title: 'New Book' });
+    })
+);
+
+/* POST create a new book -  Posts a new book to the database */
+router.post(
+    '/books/new',
+    asyncHandler(async (req, res) => {
+        const books = await Book.create({
+            title: req.body.title,
+            author: req.body.author,
+            genre: req.body.genre,
+            year: req.body.year,
+        });
+        console.log(books);
+        res.redirect('/books/');
     })
 );
 
@@ -55,24 +71,15 @@ router.get(
     })
 );
 
-/* POST New Book -  Posts a new book to the database */
-router.post(
-    '/',
-    asyncHandler(async (req, res) => {
-        const books = await Book.create(req.body);
-        console.log(req.body);
-        res.redirect('/books/' + books.id);
-    })
-);
-
 /* Update a book. */
 router.post(
     '/books/:id',
     asyncHandler(async (req, res) => {
-        const { id } = req.params;
-        const books = await Book.findAll();
-        await books.update(req.body);
-        res.redirect('/books/' + books.id);
+        //const { id } = req.params;
+        const books = await Book.findByPk(req.params.id);
+        console.log(books);
+        await Book.update({ where: { title: req.body.title } });
+        res.redirect('/books/');
     })
 );
 
