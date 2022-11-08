@@ -21,6 +21,7 @@ router.get('/', (req, res, next) => {
     next();
 });
 
+/* GET Books - Shows the full list of books */
 router.get(
     '/books',
     asyncHandler(async (req, res, next) => {
@@ -28,6 +29,14 @@ router.get(
         //const books = await Book.findAll().then((book) => res.json(book)); // returns a collection of books
         console.log(books);
         res.render('index', { books, title: 'Library Books' });
+    })
+);
+
+/* GET New Books -  Shows the create new book form */
+router.get(
+    '/books/new',
+    asyncHandler(async (req, res, next) => {
+        res.render('new-book', { title: 'Library Books' });
     })
 );
 
