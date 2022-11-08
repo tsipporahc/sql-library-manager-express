@@ -28,8 +28,6 @@ router.get(
     '/books',
     asyncHandler(async (req, res, next) => {
         const books = await Book.findAll();
-        //const books = await Book.findAll().then((book) => res.json(book)); // returns a collection of books
-        //console.log(books);
         res.render('index', { books, title: 'Library Books' });
     })
 );
@@ -71,17 +69,19 @@ router.post(
     asyncHandler(async (req, res) => {
         console.log(req.body);
         const book = await Book.findByPk(req.params.id);
-        await Book.update(req.body);
+        await book.update(req.body);
         res.redirect('/books');
     })
 );
 
 /* Delete a book. */
-/* router.post(
-    '/:id/delete',
+router.post(
+    '/books/:id/delete',
     asyncHandler(async (req, res) => {
+        const book = await Book.findByPk(req.params.id);
+        await book.destroy();
         res.redirect('/books');
     })
-); */
+);
 
 module.exports = router;
