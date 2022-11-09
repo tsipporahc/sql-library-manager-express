@@ -9,8 +9,6 @@ function asyncHandler(cb) {
         try {
             await cb(req, res, next);
         } catch (error) {
-            error.status = 404;
-            error.message = 'Sorry, this page is not found :(';
             next(error);
         }
     };
@@ -68,7 +66,14 @@ router.get(
     '/books/:id',
     asyncHandler(async (req, res, next) => {
         const book = await Book.findByPk(req.params.id);
-        res.render('update-book', { book });
+        if (book) {
+            res.render('update-book', { book });
+        } else {
+            const err = new Error(); // custom error object
+            err.status = 404;
+            err.message = 'Sorry, this page is not found :(';
+            next(err);
+        }
     })
 );
 
@@ -102,8 +107,12 @@ router.post(
     '/books/:id/delete',
     asyncHandler(async (req, res) => {
         const book = await Book.findByPk(req.params.id);
-        await book.destroy();
-        res.redirect('/books');
+        if (book) {
+            await book.destroy();
+            res.redirect('/books');
+        } else {
+            res.sendStatus(404);
+        }
     })
 );
 
