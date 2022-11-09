@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  h1= title
+  h1 New Book
+  include errors
     form(action='/books/new', method="post")
       p
         label(for="title") Title

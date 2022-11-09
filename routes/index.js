@@ -8,11 +8,10 @@ function asyncHandler(cb) {
     return async (req, res, next) => {
         try {
             await cb(req, res, next);
-        } catch (err) {
-            err.status = 404;
-            err.message = 'Sorry, this page is not found :(';
-            console.log(err);
-            res.render('error', { err });
+        } catch (error) {
+            error.status = 404;
+            error.message = 'Sorry, this page is not found :(';
+            next(error);
         }
     };
 }
@@ -44,12 +43,22 @@ router.get(
 router.post(
     '/books/new',
     asyncHandler(async (req, res) => {
+        let book;
         try {
             console.log(req.body);
-            const book = await Book.create(req.body);
+            book = await Book.create(req.body);
             res.redirect('/books/');
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            if (error.name === 'SequelizeValidationError') {
+                // checking the error
+                book = await Book.build(req.body);
+                res.render('new-book', {
+                    book,
+                    errors: error.errors,
+                });
+            } else {
+                throw error; // error caught in the asyncHandler's catch block
+            }
         }
     })
 );
@@ -67,10 +76,24 @@ router.get(
 router.post(
     '/books/:id',
     asyncHandler(async (req, res) => {
-        console.log(req.body);
-        const book = await Book.findByPk(req.params.id);
-        await book.update(req.body);
-        res.redirect('/books');
+        let book;
+        try {
+            console.log(req.body);
+            const book = await Book.findByPk(req.params.id);
+            await book.update(req.body);
+            res.redirect('/books');
+        } catch (error) {
+            if (error.name === 'SequelizeValidationError') {
+                // checking the error
+                book = await Book.build(req.body);
+                res.render('update-book', {
+                    book,
+                    errors: error.errors,
+                });
+            } else {
+                throw error; // error caught in the asyncHandler's catch block
+            }
+        }
     })
 );
 

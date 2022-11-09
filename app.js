@@ -38,12 +38,12 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-/* app.use((req, res, next) => {
-  const err = new Error(); // custom error object
-  err.status = 404;
-  err.message = 'Sorry, this page is not found :(';
-  next(err);
-}); */
+app.use((req, res, next) => {
+    const err = new Error(); // custom error object
+    err.status = 404;
+    err.message = 'Sorry, this page is not found :(';
+    next(err);
+});
 
 // global error handler for server errors
 app.use((err, req, res, next) => {
