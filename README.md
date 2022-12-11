@@ -11,7 +11,7 @@ The purpose of this project was to create an application for a local library to 
 My challenges included working with the asyncronous codes and communicating with the database. But, I learn how useful it is to refer to the documentation whenever possible.
 
 **Furture Considerations:**
-In the future, I would like to include a search field for the books listing page to make searching for available books more easier. Search should work for all of the following fields: Title, Author, Genre, Year. It would also be useful to include pagination for the books listing page.
+In the future, I would like to include a search field for the books listing page to make searching for available books more easier. Search should work for all of the following fields: Title, Author, Genre, Year. It would also be useful to include pagination for the books listing page. Adding user authentication would also be useful so that only librarians can access and edit the books.
 
 ## Project Source
 
